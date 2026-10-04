@@ -248,7 +248,11 @@ describe("OpenCode local skill injection", () => {
 });
 
 describe("spawned process working directory", () => {
-  it("sets PWD to the resolved workspace cwd so OpenCode shell tools run there", async () => {
+  // These tests drive the full local execute() path (mocked spawn). Each run
+  // takes ~1-4s even mocked, so they carry an explicit timeout: under parallel
+  // workers on a loaded machine they can exceed vitest's 5s default for
+  // environmental reasons only (no timers or retries in the asserted path).
+  it("sets PWD to the resolved workspace cwd so OpenCode shell tools run there", { timeout: 15000 }, async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-opencode-pwd-"));
     const workspace = path.join(root, "workspace");
     const commandPath = path.join(root, "opencode");
@@ -312,7 +316,7 @@ describe("spawned process working directory", () => {
     }
   });
 
-  it("falls back to the spawn cwd for PWD when no workspace cwd is provided", async () => {
+  it("falls back to the spawn cwd for PWD when no workspace cwd is provided", { timeout: 15000 }, async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-opencode-pwd-fallback-"));
     const workspace = path.join(root, "workspace");
     const commandPath = path.join(root, "opencode");

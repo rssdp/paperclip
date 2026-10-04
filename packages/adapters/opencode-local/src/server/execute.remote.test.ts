@@ -388,6 +388,7 @@ describe("opencode remote execution", () => {
       const runCall = runChildProcess.mock.calls.find((entry) => Array.isArray(entry[2]) && entry[2].includes("run")) as
         | [string, string, string[], { env: Record<string, string> }]
         | undefined;
+      expect(runCall).toBeDefined();
       expect(runCall?.[3].env.PWD).not.toBe(workspaceDir);
     } finally {
       if (previousPwd === undefined) delete process.env.PWD;
